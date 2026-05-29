@@ -70,7 +70,12 @@ export const api = {
   listarPedidos: async (params = {}) => {
     let query = supabase
       .from("pedidos")
-      .select("*, pedido_items(*), clientes:usuarios!pedidos_cliente_id_fkey(nombre, telefono)")
+      .select(`
+        *,
+        items:pedido_items(*),
+        cliente:usuarios!pedidos_cliente_id_fkey(nombre, telefono),
+        direccion:direcciones!pedidos_direccion_id_fkey(direccion_texto)
+      `)
       .order("creado_at", { ascending: false });
 
     if (params.estado) query = query.eq("estado", params.estado);
